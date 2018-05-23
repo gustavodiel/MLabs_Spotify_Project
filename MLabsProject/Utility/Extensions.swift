@@ -31,7 +31,9 @@ extension UIImageView {
         let url = URL(string: fromURLString)
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
             if error != nil {
-                sendOkAlert(((UIApplication.shared.delegate as! AppDelegate).window?.rootViewController)!, title: "Problem loading image", message: (error?.localizedDescription)!, isCritical: true)
+                DispatchQueue.main.async {
+                    sendOkAlert(((UIApplication.shared.delegate as! AppDelegate).window?.rootViewController)!, title: "Problem loading image", message: (error?.localizedDescription)!, isCritical: true)
+                }
                 return
             }
             

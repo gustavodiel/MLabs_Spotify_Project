@@ -85,7 +85,10 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
         
         // We need that juicy session
         guard let session = self.getUserSession() else {
-            sendOkAlert(self, title: Constants.Language.NeedToLoginToSpotifyTitle, message: Constants.Language.NeedToLoginToSpotifyMessage, isCritical: true)
+            // Can only send visual info from the main thread!
+            DispatchQueue.main.async {
+                sendOkAlert(self, title: Constants.Language.NeedToLoginToSpotifyTitle, message: Constants.Language.NeedToLoginToSpotifyMessage, isCritical: true)
+            }
             return
         }
         
@@ -163,7 +166,6 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
                     if let albumImages = albumResponse["images"] as? [[String: Any]] {
                         trackImageURL = albumImages[0]["url"] as! String
                     } else {
-                        print(albumResponse["images"])
                         trackImageURL = ""
                     }
                     
