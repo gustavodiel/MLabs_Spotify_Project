@@ -16,6 +16,7 @@
 		EC12EEFB20B444FC00009E45 /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC12EEF820B444FC00009E45 /* SpotifyMetadata.framework */; };
 		EC12EEFD20B4572D00009E45 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC12EEFC20B4572D00009E45 /* AVFoundation.framework */; };
 		EC12EEFF20B4688B00009E45 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC12EEFE20B4688B00009E45 /* Constants.swift */; };
+		EC1CD84120B5D519001A292C /* SpotifyViewAPICalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CD84020B5D519001A292C /* SpotifyViewAPICalls.swift */; };
 		ECA2056E20B4E4FD00C292B2 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA2056D20B4E4FD00C292B2 /* AboutViewController.swift */; };
 		ECA2057020B4E78400C292B2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA2056F20B4E78400C292B2 /* Extensions.swift */; };
 		ECA2057220B4F66F00C292B2 /* SpotifyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA2057120B4F66F00C292B2 /* SpotifyViewCell.swift */; };
@@ -63,6 +64,7 @@
 		EC12EEF820B444FC00009E45 /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyMetadata.framework; sourceTree = "<group>"; };
 		EC12EEFC20B4572D00009E45 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		EC12EEFE20B4688B00009E45 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EC1CD84020B5D519001A292C /* SpotifyViewAPICalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyViewAPICalls.swift; sourceTree = "<group>"; };
 		ECA2056D20B4E4FD00C292B2 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		ECA2056F20B4E78400C292B2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		ECA2057120B4F66F00C292B2 /* SpotifyViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyViewCell.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				ECB7540520B43AFD00FA2997 /* SpotifyViewController.swift */,
 				EC12EEF420B4443C00009E45 /* SpotifyViewController+handler.swift */,
 				ECA2057120B4F66F00C292B2 /* SpotifyViewCell.swift */,
+				EC1CD84020B5D519001A292C /* SpotifyViewAPICalls.swift */,
 			);
 			path = Spotify;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC1CD84120B5D519001A292C /* SpotifyViewAPICalls.swift in Sources */,
 				ECB753D120B436E900FA2997 /* AppDelegate.swift in Sources */,
 				EC12EEF520B4443D00009E45 /* SpotifyViewController+handler.swift in Sources */,
 				ECA2057720B5137A00C292B2 /* SpotifyArtist.swift in Sources */,
