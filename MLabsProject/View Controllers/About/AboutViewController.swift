@@ -13,23 +13,21 @@ class AboutViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        self.setupView()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    /// Set up interface of current view.
+    fileprivate func setupView() {
+        
+        // Change the background to color, otherwise its clear
+        self.view.backgroundColor = .white
+        
+        // view title
+        self.navigationItem.title = Constants.Language.About
+        
+        // We currently support iOS 10, and largeTitle is not available there
+        if #available(iOS 11.0, *) {
+            navigationItem.largeTitleDisplayMode = .automatic
+        }
     }
-    */
-
 }
