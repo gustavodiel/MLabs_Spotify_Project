@@ -11,6 +11,7 @@ import Alamofire
 
 /// Everything that calls Spotify's API goes here
 extension SpotifyViewController {
+    
     /// Calls spotify's API to get user's top artists.
     /// Then calls for the recommendations.
     /// ToDo: separate the functions
@@ -26,6 +27,8 @@ extension SpotifyViewController {
             sendOkAlert(self, title: Constants.Language.NeedToLoginToSpotifyTitle, message: Constants.Language.NeedToLoginToSpotifyMessage, isCritical: true)
             return
         }
+        
+        spinner = UIViewController.displaySpinner(onView: self.navigationController!.view)
         
         // Super basic header and the minumum Spotify needs.
         // ToDo: Make constant, static and put it somewhere else
@@ -169,6 +172,7 @@ extension SpotifyViewController {
             
             // Visual elements MUST be executed on the main thread
             DispatchQueue.main.async {
+                UIViewController.removeSpinner(spinner: self.spinner)
                 // Update our table view to clear old tracks and add new ones
                 self.tableView.reloadData()
             }

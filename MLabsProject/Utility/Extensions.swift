@@ -8,17 +8,23 @@
 
 import UIKit
 
+/// Just some convenience :v
 extension UIColor {
     convenience init(r: CGFloat, g: CGFloat, b: CGFloat){
         self.init(red: r / 255, green: g / 255, blue: b / 255, alpha: 1)
     }
 }
 
+
+/// cache containing the image data previsously downloaded, so we don't have to download the image everytime
 let imageCache = NSCache<AnyObject, UIImage>()
 
 extension UIImageView {
     
-    func loadImage(fromURLString: String){
+    /// Loads a image from a URL and then executes the callback when it's done
+    /// - parameter fromURLString: the URL of the image
+    /// - parameter callbacK: function to be called everytime the image is loaded
+    func loadImage(fromURLString: String, callback: @escaping (() -> ())){
         
         self.image = nil
         
@@ -41,6 +47,7 @@ extension UIImageView {
                 if let donwloaded = UIImage(data: data!){
                     imageCache.setObject(donwloaded, forKey: fromURLString as AnyObject)
                     self.image = donwloaded
+                    callback()
                 }
             }
             }.resume()
@@ -49,6 +56,9 @@ extension UIImageView {
 }
 
 extension UIViewController {
+    
+    /// Displays a spinner to indicate something is loading
+    /// - parameter onView: The view the spinner will be displayed
     class func displaySpinner(onView : UIView) -> UIView {
         let spinnerView = UIView.init(frame: onView.bounds)
         spinnerView.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
@@ -64,6 +74,8 @@ extension UIViewController {
         return spinnerView
     }
     
+    /// Remove the spinner
+    /// - parameter spinner: the spinner to be removed
     class func removeSpinner(spinner :UIView) {
         DispatchQueue.main.async {
             spinner.removeFromSuperview()
@@ -73,6 +85,8 @@ extension UIViewController {
 
 extension UIImage {
     
+    /// Compresses the image to a certain amount of MB (or tries to)
+    /// - parameter expectedSizeInMB: the expected size
     func compressTo(_ expectedSizeInMb: Double) -> Data? {
         let sizeInBytes = Int(expectedSizeInMb * 1024 * 1024)
         var needCompress:Bool = true

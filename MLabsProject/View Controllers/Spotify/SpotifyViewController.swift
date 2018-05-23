@@ -39,6 +39,9 @@ class SpotifyViewController: UITableViewController {
     
     /// User's recommended tracks
     var recomendation = [SpotifyTrack]()
+    
+    /// Spinner that indicates that we are loading from the web
+    var spinner: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -160,7 +163,7 @@ class SpotifyViewController: UITableViewController {
         // Get the recomendation for the specific cell
         let recommendation = self.recomendation[indexPath.row]
         
-        cell.albumImageView.loadImage(fromURLString: recommendation.imageURL)
+        cell.albumImageView.loadImage(fromURLString: recommendation.imageURL, callback: cell.onImageLoaded)
         
         cell.titleLabel.text = recommendation.name
         cell.albumNameLabel.text = recommendation.albumName

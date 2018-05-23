@@ -255,8 +255,8 @@
 			children = (
 				ECB7540520B43AFD00FA2997 /* SpotifyViewController.swift */,
 				EC12EEF420B4443C00009E45 /* SpotifyViewController+handler.swift */,
-				ECA2057120B4F66F00C292B2 /* SpotifyViewCell.swift */,
 				EC1CD84020B5D519001A292C /* SpotifyViewAPICalls.swift */,
+				ECA2057120B4F66F00C292B2 /* SpotifyViewCell.swift */,
 			);
 			path = Spotify;
 			sourceTree = "<group>";
@@ -441,10 +441,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-MLabsProject/Pods-MLabsProject-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/UIImageColors/UIImageColors.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIImageColors.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

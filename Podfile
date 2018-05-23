@@ -7,6 +7,7 @@ target 'MLabsProject' do
 
   # Pods for MLabsProject
   pod 'Alamofire'
+  pod 'UIImageColors'
 
   target 'MLabsProjectTests' do
     inherit! :search_paths

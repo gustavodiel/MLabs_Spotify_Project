@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UIImageColors
 
 class SpotifyViewCell: UITableViewCell {
     
@@ -99,8 +100,14 @@ class SpotifyViewCell: UITableViewCell {
         
     }
     
+    /// Do any configuration for the UI necessary each time a new content is used for this cell
     func configure() {
-
+        
+    }
+    
+    /// Callback for everytime the image is downloaded
+    func onImageLoaded() {
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -9,7 +9,7 @@
 struct Constants {
     
     /// Best embrumation to debug view
-    static let DebugView = true
+    static let DebugView = false
     
     /// Spotify's Client ID
     static let ClientID = "d8e56c2b42a14214a4f12a9fe4d99875"

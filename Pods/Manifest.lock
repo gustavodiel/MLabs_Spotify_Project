@@ -1,16 +1,20 @@
 PODS:
   - Alamofire (4.7.0)
+  - UIImageColors (2.0.0)
 
 DEPENDENCIES:
   - Alamofire
+  - UIImageColors
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Alamofire
+    - UIImageColors
 
 SPEC CHECKSUMS:
   Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
+  UIImageColors: 3ae0150e539342697808281a3975fe5dec2024ce
 
-PODFILE CHECKSUM: 92321f30be484350438ecc6c67210e2793ee3edc
+PODFILE CHECKSUM: 5a35d09f9b807fbe017c49e161a01de310ed4e72
 
 COCOAPODS: 1.5.0
