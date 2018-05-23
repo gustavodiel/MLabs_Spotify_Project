@@ -26,7 +26,9 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
     func getTopArtist() {
         
         // If URL is not valid, there is no point in continuing
-        guard let url = URL(string: Constants.SpotifyTopArtistURI) else {return}
+        guard let url = URL(string: Constants.SpotifyTopArtistURI) else {
+            return
+        }
         
         // We need that juicy session
         guard let session = self.getUserSession() else {
@@ -47,8 +49,11 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
             "limit": "5"
         ]
         
+        // create a queue so that we make the request on the background
+        let queue = DispatchQueue(label: "com.gustavo.diel.MLabs", qos: .background, attributes: .concurrent)
+        
         // Use Alamofire to make a GET request to user's top artists
-        Alamofire.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: headers).responseJSON(queue: queue) { (response) in
             if let result = response.result.value {
                 
                 self.artists.removeAll()
@@ -74,11 +79,19 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
     func getRecomended() {
         
         // No point of calling a API without a proper URL
-        guard let url = URL(string: Constants.SpotifyRecomendetionsURI) else {return}
+        guard let url = URL(string: Constants.SpotifyRecomendetionsURI) else {
+            return
+        }
+        
+        // We need that juicy session
+        guard let session = self.getUserSession() else {
+            sendOkAlert(self, title: Constants.Language.NeedToLoginToSpotifyTitle, message: Constants.Language.NeedToLoginToSpotifyMessage, isCritical: true)
+            return
+        }
         
         // Minimum HTTP Header for Spotify
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(self.session.accessToken!)"
+            "Authorization": "Bearer \(session.accessToken!)"
         ]
         
         // Here we limit the amout by 50 (I think that's the maximum it allows us)
@@ -91,14 +104,20 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
             "market": "BR"
         ]
         
+        // Make a Queue so that we make the request on the background
+        let queue = DispatchQueue(label: "com.gustavo.diel.MLabs", qos: .background, attributes: .concurrent)
+        
         // Do the GET request for recomendations
-        Alamofire.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: headers).responseJSON(queue: queue) { (response) in
             if let result = response.result.value {
                 
                 // Now that we have a valid response, we clear the old buffer
                 self.recomendation.removeAll()
                 
-                let json = result as! NSDictionary
+                guard let json = result as? NSDictionary else {
+                    return
+                }
+            
                 for trackResponse in json["tracks"] as! [[String: Any]] {
                     
                     // There are two ways of getting the artist here
@@ -154,10 +173,13 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
                     self.recomendation.append(track)
                 }
             }
+            
+            // Visual elements MUST be executed on the main thread
+            DispatchQueue.main.async {
+                // Update our table view to clear old tracks and add new ones
+                self.tableView.reloadData()
+            }
         }
-
-        // Update our table view to clear old tracks and add new ones
-        tableView.reloadData()
     }
     
     /// Will get new releases to the user

@@ -100,13 +100,13 @@ class SpotifyViewController: UITableViewController {
                     do {
                         self.user = try SPTUser(from: data, with: response)
                     } catch {
-                        print("ERROR: Can't create user with current data and request")
+                        print("ERROR: Can't create user with current data and request: \(error.localizedDescription)")
                     }
                 }
                 
                 task.resume()
             } catch {
-                print("ERROR: Can't create request for user")
+                print("ERROR: Can't create request for user: \(error.localizedDescription)")
             }
             if self.session.isValid() {
                 return self.session
