@@ -8,37 +8,18 @@
 
 import UIKit
 
-class AboutViewController: UIViewController {
+class AboutViewController: UITableViewController {
     
-    let aboutText: UITextView = {
-        let lb = UITextView()
-        lb.font = .preferredFont(forTextStyle: UIFontTextStyle.body)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
-        lb.textAlignment = .left
-        lb.backgroundColor = .red
-        return lb
-    }()
+    /// Cell ID to requeue cell
+    let CellID = "AboutCellID"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setupView()
         
-        self.view.addSubview(self.aboutText)
-        
-        self.setupConstraints()
     }
-    
-    /// Set up all the constraints
-    fileprivate func setupConstraints() {
-        aboutText.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 8).isActive = true
-        aboutText.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8).isActive = true
-        
-        aboutText.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 2/3).isActive = true
-        aboutText.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-    }
-    
+
     /// Set up interface of current view.
     fileprivate func setupView() {
         
@@ -48,9 +29,47 @@ class AboutViewController: UIViewController {
         // view title
         self.navigationItem.title = Constants.Language.About
         
+        // Prepare Table View
+        self.tableView.delegate = self
+        self.tableView.allowsSelection = true
+        self.tableView.allowsMultipleSelection = false
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.CellID)
+        self.tableView.separatorStyle = .singleLineEtched
+        
         // We currently support iOS 10, and largeTitle is not available there
         if #available(iOS 11.0, *) {
             navigationItem.largeTitleDisplayMode = .automatic
         }
     }
+    
+    /// MARK: Table View
+    /// =====================================
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        // Dequeue cell for maximum performance
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.CellID, for: indexPath)
+        
+        cell.textLabel?.text = "oiee"
+        
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 54
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) else {return}
+
+    }
+    
 }
