@@ -75,6 +75,7 @@ class SpotifyViewController: UITableViewController {
         self.tableView.allowsMultipleSelection = false
         self.tableView.register(SpotifyViewCell.self, forCellReuseIdentifier: self.CellID)
         self.tableView.separatorStyle = .none
+        self.tableView.tableFooterView = UIView()
         
         
         // Create a left bar item, to login/logoff the user

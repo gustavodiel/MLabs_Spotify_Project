@@ -63,6 +63,12 @@ protocol Language {
     var NeedToLoginToSpotifyMessage: String {get}
     
     var NowPlaying: String {get}
+    
+    var AboutName: String {get}
+    var AboutOpenGithub: String {get}
+    var AboutDeveloper: String {get}
+    var AboutAck: String {get}
+    var AboutThirdParties: String {get}
 }
 
 struct English : Language {
@@ -79,6 +85,12 @@ struct English : Language {
     var NeedToLoginToSpotifyMessage: String = "Please login to your Spotify account using the button at the side"
     
     var NowPlaying: String = "Now Playing"
+    
+    var AboutName: String = "Name"
+    var AboutOpenGithub: String = "Open on Github.com"
+    var AboutDeveloper: String = "Developer:"
+    var AboutAck: String = "Acknowledgement:"
+    var AboutThirdParties: String = "Third party frameworks and tools:"
 }
 
 struct Portugues : Language {
@@ -95,5 +107,11 @@ struct Portugues : Language {
     var NeedToLoginToSpotifyMessage: String = "Por favor faça login à sua conta do Spotify utilizando o botão ao lado"
     
     var NowPlaying: String = "Tocando"
+    
+    var AboutName: String = "Nome"
+    var AboutOpenGithub: String = "Abrir no Github.com"
+    var AboutDeveloper: String = "Desenvolvedor:"
+    var AboutAck: String = "Agradecimentos:"
+    var AboutThirdParties: String = "Ferramentas e frameworks de terceiros:"
 }
 

@@ -23,10 +23,14 @@ class MainTabBarViewController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.createSpotifyViewController()
-        self.createAbooutViewController()
+        if self.viewControllers?.count != 2 {
+            self.viewControllers?.removeAll()
+            self.controllers.removeAll()
+            self.createSpotifyViewController()
+            self.createAbooutViewController()
+        }
         
-        self.viewControllers = controllers
+        self.viewControllers = self.controllers
     }
     
     /// Generates all requirements to create and instantiate the Spotify view in our Tab Bar

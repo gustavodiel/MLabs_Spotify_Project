@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class AboutViewController: UITableViewController {
     
@@ -33,8 +34,8 @@ class AboutViewController: UITableViewController {
         self.tableView.delegate = self
         self.tableView.allowsSelection = true
         self.tableView.allowsMultipleSelection = false
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.CellID)
-        self.tableView.separatorStyle = .singleLineEtched
+        self.tableView.separatorStyle = .singleLine
+        self.tableView.tableFooterView = UIView()
         
         // We currently support iOS 10, and largeTitle is not available there
         if #available(iOS 11.0, *) {
@@ -46,7 +47,16 @@ class AboutViewController: UITableViewController {
     /// =====================================
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        switch section {
+        case 0:
+            return 4
+        case 1:
+            return 1
+        case 2:
+            return 2
+        default:
+            return 0
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -56,10 +66,54 @@ class AboutViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Dequeue cell for maximum performance
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.CellID, for: indexPath)
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: self.CellID)
         
-        cell.textLabel?.text = "oiee"
+        if cell == nil {
+            cell = UITableViewCell(style: .value1, reuseIdentifier: self.CellID)
+            cell.selectionStyle = .none
+        }
         
+        switch indexPath.section {
+        case 0:
+            switch indexPath.row {
+            case 0:
+                cell.textLabel?.text = Constants.Language.AboutName
+                cell.detailTextLabel?.text = "Gustavo Diel"
+                break
+            case 1:
+                cell.textLabel?.text = "Github"
+                cell.detailTextLabel?.text = "gustavodiel"
+                cell.accessoryType = .disclosureIndicator
+                break
+            case 2:
+                cell.textLabel?.text = "Email"
+                cell.detailTextLabel?.text = "gustavodiel@hotmail.com"
+                cell.accessoryType = .disclosureIndicator
+                break
+            case 3:
+                cell.textLabel?.text = "LinkedIn"
+                cell.accessoryType = .disclosureIndicator
+                break
+            default:
+                break
+            }
+        case 1:
+            cell.textLabel?.text = "Magrathea Labs"
+            cell.accessoryType = .disclosureIndicator
+            break
+        case 2:
+            if indexPath.row == 0 {
+                cell.textLabel?.text = "Alamofire"
+            } else {
+                cell.textLabel?.text = "UIImageColors"
+            }
+            cell.accessoryType = .disclosureIndicator
+            cell.detailTextLabel?.text = Constants.Language.AboutOpenGithub
+            
+            break
+        default:
+            break
+        }
         return cell
     }
     
@@ -67,9 +121,57 @@ class AboutViewController: UITableViewController {
         return 54
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return Constants.Language.AboutDeveloper
+        case 1:
+            return Constants.Language.AboutAck
+        case 2:
+            return Constants.Language.AboutThirdParties
+        default:
+            return ""
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) else {return}
-
+        var strUrl: String!
+        
+        switch indexPath.section {
+        case 0:
+            switch indexPath.row {
+            case 0:
+                return
+            case 1:
+                strUrl = "https://github.com/gustavodiel"
+                break
+            case 2:
+                sendEmail(to: "gustavodiel@hotmail.com", viewController: self, delegate: self)
+                return
+            case 3:
+                strUrl = "https://linkedin.com/in/gustavodiel"
+            default:
+                break
+            }
+        case 1:
+            strUrl = "http://www.magrathealabs.com"
+            break
+        case 2:
+            if indexPath.row == 0 {
+                strUrl = "https://github.com/Alamofire/Alamofire"
+                break
+            } else {
+                strUrl = "https://github.com/jathu/UIImageColors"
+                break
+            }
+        default:
+            break
+        }
+        
+        guard let url = URL(string: strUrl) else {return}
+        
+        let svc = SFSafariViewController(url: url)
+        self.present(svc, animated: true, completion: nil)
     }
     
 }
