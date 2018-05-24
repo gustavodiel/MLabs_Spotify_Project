@@ -16,6 +16,7 @@ class AboutViewController: UIViewController {
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
         lb.textAlignment = .left
+        lb.backgroundColor = .red
         return lb
     }()
 
@@ -31,7 +32,11 @@ class AboutViewController: UIViewController {
     
     /// Set up all the constraints
     fileprivate func setupConstraints() {
+        aboutText.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 8).isActive = true
+        aboutText.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8).isActive = true
         
+        aboutText.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 2/3).isActive = true
+        aboutText.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
     }
     
     /// Set up interface of current view.
