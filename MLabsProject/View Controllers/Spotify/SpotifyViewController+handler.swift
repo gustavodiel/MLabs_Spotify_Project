@@ -34,6 +34,9 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
             userDefaults.removeObject(forKey: Constants.SpotifyUserDefaultsSessionCode)
             navigationItem.leftBarButtonItem?.title = Constants.Language.Login
             self.navigationItem.title = "Spotify"
+            self.artists.removeAll()
+            self.spotifyRecomendations.removeAll()
+            self.tableView.reloadData()
         }
     }
     

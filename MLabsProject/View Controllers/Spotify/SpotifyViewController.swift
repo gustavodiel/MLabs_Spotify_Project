@@ -38,10 +38,13 @@ class SpotifyViewController: UITableViewController {
     var artists = [SpotifyArtist]()
     
     /// User's recommended tracks
-    var recomendation = [SpotifyTrack]()
+    var spotifyRecomendations = [SpotifyTrack]()
     
     /// Spinner that indicates that we are loading from the web
     var spinner: UIView!
+    
+    /// Whether or not a music is being played
+    var isPlayingMusic = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,68 +57,6 @@ class SpotifyViewController: UITableViewController {
         
         self.checkForUserSession()
         
-    }
-
-    /// Set up Spotify's Authorization variables with our own provided on their app registration website
-    func setupSpotify() {
-        SPTAuth.defaultInstance().clientID = Constants.ClientID
-        SPTAuth.defaultInstance().redirectURL = URL(string: Constants.ReturnURI)
-        // Yeah, Spotify's API is not updated :v
-        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserFollowReadScope, "user-top-read", SPTAuthStreamingScope, SPTAuthUserLibraryReadScope, SPTAuthPlaylistReadPrivateScope, SPTAuthUserReadEmailScope, SPTAuthUserReadPrivateScope]
-        
-        self.loginUrl = SPTAuth.defaultInstance().spotifyWebAuthenticationURL()
-        
-    }
-    
-    /// Check if user is logged in and do whatever it is needed to
-    func checkForUserSession() {
-        guard let session = self.getUserSession() else { return }
-        
-        self.navigationItem.leftBarButtonItem?.title = Constants.Language.Logout
-        self.navigationItem.title = String(format: Constants.Language.TitleRecomendation, session.canonicalUsername.uppercased())
-    }
-    
-    /// Returns the current Spotify's session for logged user. `nil` if there is none.
-    /// - Returns: current SPTSession if any. `nil` if the user is not logged in Spotify.
-    func getUserSession() -> SPTSession? {
-        
-        // If we have a session, check if it's valid. If so, return it. Else just get a new one
-        if let session = self.session {
-            if session.isValid() {
-                return session
-            }
-            // Dont return. Let it run
-            self.session = nil
-        }
-        
-        // Get a new session
-        let userDefaults = UserDefaults.standard
-        if let sessionObj:AnyObject = userDefaults.object(forKey: Constants.SpotifyUserDefaultsSessionCode) as AnyObject? {
-            let sessionDataObj = sessionObj as! Data
-            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
-            self.session = firstTimeSession
-            do {
-                let request = try SPTUser.createRequestForCurrentUser(withAccessToken: self.session.accessToken)
-                let task = URLSession.shared.dataTask(with: request) {data, response, error in
-                    guard let data = data, error == nil else {
-                        return
-                    }
-                    do {
-                        self.user = try SPTUser(from: data, with: response)
-                    } catch {
-                        print("ERROR: Can't create user with current data and request: \(error.localizedDescription)")
-                    }
-                }
-                
-                task.resume()
-            } catch {
-                print("ERROR: Can't create request for user: \(error.localizedDescription)")
-            }
-            if self.session.isValid() {
-                return self.session
-            }
-        }
-        return nil
     }
     
     /// Set up interface of current view.
@@ -133,6 +74,7 @@ class SpotifyViewController: UITableViewController {
         self.tableView.allowsSelection = true
         self.tableView.allowsMultipleSelection = false
         self.tableView.register(SpotifyViewCell.self, forCellReuseIdentifier: self.CellID)
+        self.tableView.separatorStyle = .none
         
         
         // Create a left bar item, to login/logoff the user
@@ -152,7 +94,7 @@ class SpotifyViewController: UITableViewController {
     /// =====================================
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.recomendation.count
+        return self.spotifyRecomendations.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -161,22 +103,28 @@ class SpotifyViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: CellID, for: indexPath) as! SpotifyViewCell
         
         // Get the recomendation for the specific cell
-        let recommendation = self.recomendation[indexPath.row]
+        let recomendation = self.spotifyRecomendations[indexPath.row]
         
-        cell.albumImageView.loadImage(fromURLString: recommendation.imageURL, callback: cell.onImageLoaded)
-        
-        cell.titleLabel.text = recommendation.name
-        cell.albumNameLabel.text = recommendation.albumName
-        cell.artistNameLabel.text = recommendation.artist.name
-        
-        cell.configure()
+        cell.recomendation = recomendation
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? SpotifyViewCell else {return}
-        print(cell.titleLabel.text)
+        
+        let rec = self.spotifyRecomendations[indexPath.row]
+        
+        if self.isPlayingMusic {
+            self.stop(streamer: self.musicPlayer)
+            self.isPlayingMusic = false
+            cell.statusLabel.text = ""
+        } else {
+            self.play(music: rec.uri, streamer: self.musicPlayer)
+            self.isPlayingMusic = true
+            cell.statusLabel.text = Constants.Language.NowPlaying
+        }
+        
         
     }
     

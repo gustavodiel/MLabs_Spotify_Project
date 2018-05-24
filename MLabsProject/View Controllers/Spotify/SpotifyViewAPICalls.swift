@@ -12,6 +12,73 @@ import Alamofire
 /// Everything that calls Spotify's API goes here
 extension SpotifyViewController {
     
+    /// Set up Spotify's Authorization variables with our own provided on their app registration website
+    func setupSpotify() {
+        SPTAuth.defaultInstance().clientID = Constants.ClientID
+        SPTAuth.defaultInstance().redirectURL = URL(string: Constants.ReturnURI)
+        // Yeah, Spotify's API is not updated :v
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserFollowReadScope, "user-top-read", SPTAuthStreamingScope, SPTAuthUserLibraryReadScope, SPTAuthPlaylistReadPrivateScope, SPTAuthUserReadEmailScope, SPTAuthUserReadPrivateScope]
+        
+        self.loginUrl = SPTAuth.defaultInstance().spotifyWebAuthenticationURL()
+        
+    }
+    
+    /// Check if user is logged in and do whatever it is needed to
+    func checkForUserSession() {
+        guard let session = self.getUserSession() else { return }
+        
+        self.navigationItem.leftBarButtonItem?.title = Constants.Language.Logout
+        self.navigationItem.title = String(format: Constants.Language.TitleRecomendation, session.canonicalUsername.uppercased())
+        
+        self.initializeMusicPlayer(authSession: session)
+        
+        self.getTopArtist()
+    }
+    
+    /// Returns the current Spotify's session for logged user. `nil` if there is none.
+    /// - Returns: current SPTSession if any. `nil` if the user is not logged in Spotify.
+    func getUserSession() -> SPTSession? {
+        
+        // If we have a session, check if it's valid. If so, return it. Else just get a new one
+        if let session = self.session {
+            if session.isValid() {
+                return session
+            }
+            // Dont return. Let it run
+            self.session = nil
+        }
+        
+        // Get a new session
+        let userDefaults = UserDefaults.standard
+        if let sessionObj:AnyObject = userDefaults.object(forKey: Constants.SpotifyUserDefaultsSessionCode) as AnyObject? {
+            let sessionDataObj = sessionObj as! Data
+            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
+            self.session = firstTimeSession
+            do {
+                let request = try SPTUser.createRequestForCurrentUser(withAccessToken: self.session.accessToken)
+                let task = URLSession.shared.dataTask(with: request) {data, response, error in
+                    guard let data = data, error == nil else {
+                        return
+                    }
+                    do {
+                        self.user = try SPTUser(from: data, with: response)
+                    } catch {
+                        print("ERROR: Can't create user with current data and request: \(error.localizedDescription)")
+                        print("Probably it has expired")
+                    }
+                }
+                
+                task.resume()
+            } catch {
+                print("ERROR: Can't create request for user: \(error.localizedDescription)")
+            }
+            if self.session.isValid() {
+                return self.session
+            }
+        }
+        return nil
+    }
+    
     /// Calls spotify's API to get user's top artists.
     /// Then calls for the recommendations.
     /// ToDo: separate the functions
@@ -96,7 +163,7 @@ extension SpotifyViewController {
         // About the market, I dont think it is necessary, because of the artists.
         /// ToDo: Try to remove the market param
         let params = [
-            "limit": "50",
+            "limit": "6",
             "seed_artists": self.artists.map{$0.id}.joined(separator: ","),
             "market": "BR"
         ]
@@ -106,14 +173,17 @@ extension SpotifyViewController {
         
         // Do the GET request for recomendations
         Alamofire.request(url, method: .get, parameters: params, encoding: URLEncoding.default, headers: headers).responseJSON(queue: queue) { (response) in
+            
+            let taskGroup = DispatchGroup()
             if let result = response.result.value {
                 
                 // Now that we have a valid response, we clear the old buffer
-                self.recomendation.removeAll()
+                self.spotifyRecomendations.removeAll()
                 
                 guard let json = result as? NSDictionary else {
                     return
                 }
+                
                 
                 for trackResponse in json["tracks"] as! [[String: Any]] {
                     
@@ -166,16 +236,30 @@ extension SpotifyViewController {
                     // Create the track and store it
                     let track = SpotifyTrack(name: trackName, artist: trackArtist!, id: trackID, uri: trackURI, spotifyURL: trackURL, imageURL: trackImageURL, albumName: trackAlbumName, trackNumber: trackNumber)
                     
-                    self.recomendation.append(track)
+                    
+                    self.spotifyRecomendations.append(track)
                 }
             }
-            
-            // Visual elements MUST be executed on the main thread
             DispatchQueue.main.async {
                 UIViewController.removeSpinner(spinner: self.spinner)
                 // Update our table view to clear old tracks and add new ones
                 self.tableView.reloadData()
             }
+            for rec in self.spotifyRecomendations {
+                rec.downloadImage(withTaskGroup: taskGroup)
+            }
+            
+            // Visual elements MUST be executed on the main thread
+            taskGroup.notify(queue: DispatchQueue.main, work: DispatchWorkItem(block: {
+                
+                // All tasks are done.
+                DispatchQueue.main.async {
+                    UIViewController.removeSpinner(spinner: self.spinner)
+                    // Update our table view to clear old tracks and add new ones
+                    self.tableView.reloadData()
+                }
+            }))
+
         }
     }
     
@@ -234,5 +318,13 @@ extension SpotifyViewController {
             }
         })
     }
+    
+    /// Plays a song using Spotify's API
+    /// - Parameter music: Spotify's Music ID.
+    /// - Parameter streamer: Spotify's API for Audio Steaming Controller.
+    func stop(streamer: SPTAudioStreamingController!) {
+        streamer.setIsPlaying(false, callback: nil)
+    }
+    
     
 }

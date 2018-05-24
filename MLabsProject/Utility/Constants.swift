@@ -6,6 +6,8 @@
 //  Copyright © 2018 Gustavo Diel. All rights reserved.
 //
 
+import UIImageColors
+
 struct Constants {
     
     /// Best embrumation to debug view
@@ -40,6 +42,9 @@ struct Constants {
     /// Protocol that holds the localization for our app
     static let Language: Language = Portugues()
     
+    /// cache containing the image data previsously downloaded, so we don't have to download the image everytime
+    static let ImageCache = NSCache<AnyObject, UIImage>()
+    
 }
 
 /// Here we declare localization text for the string in the app.
@@ -48,17 +53,23 @@ protocol Language {
     var Logout: String {get}
     var Login: String {get}
     
+    var FilterButtonTitle: String {get}
+    
     var About: String {get}
     
     var TitleRecomendation: String {get}
     
     var NeedToLoginToSpotifyTitle: String {get}
     var NeedToLoginToSpotifyMessage: String {get}
+    
+    var NowPlaying: String {get}
 }
 
 struct English : Language {
     var Logout: String = "Logout"
     var Login: String = "Login"
+    
+    var FilterButtonTitle: String = "More"
     
     var About: String = "Logout"
     
@@ -66,11 +77,15 @@ struct English : Language {
     
     var NeedToLoginToSpotifyTitle: String = "Login required"
     var NeedToLoginToSpotifyMessage: String = "Please login to your Spotify account using the button at the side"
+    
+    var NowPlaying: String = "Now Playing"
 }
 
 struct Portugues : Language {
     var Logout: String = "Sair"
     var Login: String = "Entrar"
+    
+    var FilterButtonTitle: String = "Mais"
     
     var About: String = "Sobre"
     
@@ -78,5 +93,7 @@ struct Portugues : Language {
     
     var NeedToLoginToSpotifyTitle: String = "Login Necessário"
     var NeedToLoginToSpotifyMessage: String = "Por favor faça login à sua conta do Spotify utilizando o botão ao lado"
+    
+    var NowPlaying: String = "Tocando"
 }
 

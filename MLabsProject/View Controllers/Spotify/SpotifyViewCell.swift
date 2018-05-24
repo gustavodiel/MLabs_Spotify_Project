@@ -18,6 +18,8 @@ class SpotifyViewCell: UITableViewCell {
         lb.isUserInteractionEnabled = false
         if Constants.DebugView {
             lb.backgroundColor = .green
+        } else {
+            lb.backgroundColor = .clear
         }
         lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
         lb.textAlignment = .left
@@ -43,6 +45,8 @@ class SpotifyViewCell: UITableViewCell {
         lb.isUserInteractionEnabled = false
         if Constants.DebugView {
             lb.backgroundColor = .yellow
+        } else {
+            lb.backgroundColor = .clear
         }
         lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
         lb.textAlignment = .left
@@ -56,13 +60,35 @@ class SpotifyViewCell: UITableViewCell {
         lb.isUserInteractionEnabled = false
         if Constants.DebugView {
             lb.backgroundColor = .red
+        } else {
+            lb.backgroundColor = .clear
         }
         lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
         lb.textAlignment = .left
         return lb
     }()
     
-    var row = 0
+    let statusLabel: UITextView = {
+        let lb = UITextView()
+        lb.font = .preferredFont(forTextStyle: .headline)
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        lb.isUserInteractionEnabled = false
+        if Constants.DebugView {
+            lb.backgroundColor = .red
+        } else {
+            lb.backgroundColor = .clear
+        }
+        lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
+        lb.textAlignment = .right
+        return lb
+    }()
+    
+    
+    var recomendation: SpotifyTrack? {
+        didSet {
+            self.configure()
+        }
+    }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?){
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -76,7 +102,12 @@ class SpotifyViewCell: UITableViewCell {
         addSubview(titleLabel)
         addSubview(albumNameLabel)
         addSubview(artistNameLabel)
-        
+        addSubview(statusLabel)
+
+        self.setupConstraints()
+    }
+    
+    fileprivate func setupConstraints() {
         albumImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
         albumImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8).isActive = true
         albumImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
@@ -96,19 +127,31 @@ class SpotifyViewCell: UITableViewCell {
         artistNameLabel.leftAnchor.constraint(equalTo: albumImageView.rightAnchor, constant: 12).isActive = true
         artistNameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8).isActive = true
         artistNameLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-
         
+        statusLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
+        statusLabel.leftAnchor.constraint(equalTo: albumImageView.rightAnchor, constant: -12).isActive = true
+        statusLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8).isActive = true
+        statusLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
     }
     
     /// Do any configuration for the UI necessary each time a new content is used for this cell
     func configure() {
+        self.albumImageView.image = self.recomendation!.image
         
-    }
-    
-    /// Callback for everytime the image is downloaded
-    func onImageLoaded() {
+        self.titleLabel.text = self.recomendation!.name
+        self.albumNameLabel.text = self.recomendation!.albumName
+        self.artistNameLabel.text = self.recomendation!.artist.name
         
+        if let color = self.recomendation!.imageColor {
+            self.backgroundColor = color.background
+            self.titleLabel.textColor = color.primary
+            self.statusLabel.textColor = color.primary
+            self.albumNameLabel.textColor = color.secondary
+            self.artistNameLabel.textColor = color.detail
+        }
+
     }
+
     
     required init?(coder aDecoder: NSCoder) {
         fatalError()

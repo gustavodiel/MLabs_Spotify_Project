@@ -9,11 +9,29 @@
 import UIKit
 
 class AboutViewController: UIViewController {
+    
+    let aboutText: UITextView = {
+        let lb = UITextView()
+        lb.font = .preferredFont(forTextStyle: UIFontTextStyle.body)
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        lb.contentInset = UIEdgeInsetsMake(-7.0, 0, 0, 0)
+        lb.textAlignment = .left
+        return lb
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setupView()
+        
+        self.view.addSubview(self.aboutText)
+        
+        self.setupConstraints()
+    }
+    
+    /// Set up all the constraints
+    fileprivate func setupConstraints() {
+        
     }
     
     /// Set up interface of current view.

@@ -15,22 +15,21 @@ extension UIColor {
     }
 }
 
-
-/// cache containing the image data previsously downloaded, so we don't have to download the image everytime
-let imageCache = NSCache<AnyObject, UIImage>()
-
 extension UIImageView {
     
     /// Loads a image from a URL and then executes the callback when it's done
     /// - parameter fromURLString: the URL of the image
     /// - parameter callbacK: function to be called everytime the image is loaded
-    func loadImage(fromURLString: String, callback: @escaping (() -> ())){
+    func loadImage(fromURLString: String, callback: (() -> ())?){
         
         self.image = nil
         
         //retrieve from cache if there is
-        if let cachedImage = imageCache.object(forKey: fromURLString as AnyObject) {
+        if let cachedImage = Constants.ImageCache.object(forKey: fromURLString as AnyObject) {
             self.image = cachedImage
+            if let callback = callback {
+                callback()
+            }
             return
         }
         
@@ -45,12 +44,14 @@ extension UIImageView {
             
             DispatchQueue.main.async {
                 if let donwloaded = UIImage(data: data!){
-                    imageCache.setObject(donwloaded, forKey: fromURLString as AnyObject)
+                    Constants.ImageCache.setObject(donwloaded, forKey: fromURLString as AnyObject)
                     self.image = donwloaded
-                    callback()
+                    if let callback = callback {
+                        callback()
+                    }
                 }
             }
-            }.resume()
+        }.resume()
     }
     
 }
