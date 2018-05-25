@@ -40,7 +40,7 @@ struct Constants {
     static let AboutIconImage = UIImage(named: "about")
     
     /// Protocol that holds the localization for our app
-    static let Language: Language = Portugues()
+    static let Language: Language = English()
     
     /// cache containing the image data previsously downloaded, so we don't have to download the image everytime
     static let ImageCache = NSCache<AnyObject, UIImage>()
