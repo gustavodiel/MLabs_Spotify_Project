@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 
 /// Everything that calls Spotify's API goes here
-extension SpotifyViewController {
+extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     /// Set up Spotify's Authorization variables with our own provided on their app registration website
     func setupSpotify() {
@@ -31,6 +31,10 @@ extension SpotifyViewController {
         self.navigationItem.title = String(format: Constants.Language.TitleRecomendation, session.canonicalUsername.uppercased())
         
         self.initializeMusicPlayer(authSession: session)
+        
+        // Remove the Please login to your spotify text
+        self.tableFooterTextView.isHidden = true
+        self.tableFooterView.frame = CGRect(x: 0, y: 0, width: self.tableFooterView.frame.width, height: 0)
         
         self.getTopArtist()
     }
@@ -161,9 +165,8 @@ extension SpotifyViewController {
         // Here we limit the amout by 50 (I think that's the maximum it allows us)
         // also we send the user's top artists.
         // About the market, I dont think it is necessary, because of the artists.
-        /// ToDo: Try to remove the market param
         let params = [
-            "limit": "6",
+            "limit": "25",
             "seed_artists": self.artists.map{$0.id}.joined(separator: ","),
             "market": "BR"
         ]
@@ -322,8 +325,27 @@ extension SpotifyViewController {
     /// Plays a song using Spotify's API
     /// - Parameter music: Spotify's Music ID.
     /// - Parameter streamer: Spotify's API for Audio Steaming Controller.
+    /// - Parameter final: is this stopping because the user will logout?
     func stop(streamer: SPTAudioStreamingController!) {
-        streamer.setIsPlaying(false, callback: nil)
+        streamer.setIsPlaying(false) { err in
+            if err != nil {
+                print(err?.localizedDescription)
+            }
+        }
+    }
+    
+    func stopAndThenPlay(music: String, streamer: SPTAudioStreamingController!) {
+        streamer.setIsPlaying(false) {err in
+            if err != nil {
+                print(err!.localizedDescription)
+            }
+            
+            self.musicPlayer?.playSpotifyURI(music, startingWith: 0, startingWithPosition: 0, callback: { (error) in
+                if (error != nil) {
+                    print(error!.localizedDescription)
+                }
+            })
+        }
     }
     
     

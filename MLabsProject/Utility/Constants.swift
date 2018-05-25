@@ -53,6 +53,8 @@ protocol Language {
     var Logout: String {get}
     var Login: String {get}
     
+    var PleaseLoginToSpotify: String {get}
+    
     var FilterButtonTitle: String {get}
     
     var About: String {get}
@@ -75,9 +77,11 @@ struct English : Language {
     var Logout: String = "Logout"
     var Login: String = "Login"
     
+    var PleaseLoginToSpotify: String = "Please, login in your Spotify account to see your recommendations!"
+    
     var FilterButtonTitle: String = "More"
     
-    var About: String = "Logout"
+    var About: String = "About"
     
     var TitleRecomendation: String = "%@'s recomendations"
     
@@ -96,6 +100,8 @@ struct English : Language {
 struct Portugues : Language {
     var Logout: String = "Sair"
     var Login: String = "Entrar"
+    
+    var PleaseLoginToSpotify: String = "Por favor, entre na sua conta do Spotify para ver seus recomendados!"
     
     var FilterButtonTitle: String = "Mais"
     

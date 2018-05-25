@@ -21,6 +21,8 @@ class SpotifyTrack: NSObject {
     var image: UIImage
     var imageColor: UIImageColors?
     
+    var isPlaying = false
+    
     init(name: String, artist: SpotifyArtist, id: String, uri: String, spotifyURL: String, imageURL: String, albumName: String, trackNumber: Int){
         self.name = name
         self.artist = artist

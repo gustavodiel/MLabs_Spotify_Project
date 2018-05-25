@@ -21,6 +21,10 @@ func sendOkAlert(_ view: UIViewController, title: String, message: String, isCri
     view.present(alert, animated: true)
 }
 
+/// Send email to someone
+/// - parameter to: one's email address
+/// - parameter viewController: The view controller that will hold the email message pop up
+/// - parameter delegate: the object that holds the MailCompose delegate
 func sendEmail(to: String, viewController: UIViewController, delegate: MFMailComposeViewControllerDelegate) {
     if MFMailComposeViewController.canSendMail() {
         let mail = MFMailComposeViewController()

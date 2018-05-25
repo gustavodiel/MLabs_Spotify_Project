@@ -142,6 +142,12 @@ class SpotifyViewCell: UITableViewCell {
         self.albumNameLabel.text = self.recomendation!.albumName
         self.artistNameLabel.text = self.recomendation!.artist.name
         
+        if self.recomendation!.isPlaying{
+            self.statusLabel.text = Constants.Language.NowPlaying
+        } else {
+            self.statusLabel.text = ""
+        }
+        
         if let color = self.recomendation!.imageColor {
             self.backgroundColor = color.background
             self.titleLabel.textColor = color.primary

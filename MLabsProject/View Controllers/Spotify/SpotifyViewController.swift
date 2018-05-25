@@ -43,8 +43,26 @@ class SpotifyViewController: UITableViewController {
     /// Spinner that indicates that we are loading from the web
     var spinner: UIView!
     
-    /// Whether or not a music is being played
-    var isPlayingMusic = false
+    /// The track object of the current playing song
+    var currentPlayingMusic: SpotifyTrack?
+    
+    /// The cell of the current playing song
+    var currentPlayingMusicCell: SpotifyViewCell?
+    
+    let tableFooterTextView: UITextView = {
+        let tx = UITextView()
+        tx.translatesAutoresizingMaskIntoConstraints = false
+        tx.textAlignment = .center
+        tx.tintColor = .lightGray
+        tx.font = .preferredFont(forTextStyle: UIFontTextStyle.headline)
+        return tx
+    }()
+    
+    let tableFooterView: UIView = {
+        let fv = UIView()
+        fv.frame = CGRect(x: 0, y: 0, width: 100, height: 256)
+        return fv
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,19 +93,28 @@ class SpotifyViewController: UITableViewController {
         self.tableView.allowsMultipleSelection = false
         self.tableView.register(SpotifyViewCell.self, forCellReuseIdentifier: self.CellID)
         self.tableView.separatorStyle = .none
-        self.tableView.tableFooterView = UIView()
+        self.tableView.tableFooterView = tableFooterView
         
+        self.configureConstraints()
         
         // Create a left bar item, to login/logoff the user
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constants.Language.Login, style: .plain, target: self, action: #selector(handleLeftBarButtonItem))
-        
-        // Create a left bar item, to login/logoff the user
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Test", style: .plain, target: self, action: #selector(handleRightBarButtonItem))
         
         // We currently support iOS 10, and largeTitle is not available there
         if #available(iOS 11.0, *) {
             navigationItem.largeTitleDisplayMode = .automatic
         }
+    }
+    
+    /// Configure the constraints of the UI elements
+    fileprivate func configureConstraints() {
+        tableFooterView.addSubview(tableFooterTextView)
+        tableFooterTextView.text = Constants.Language.PleaseLoginToSpotify
+        
+        tableFooterTextView.centerXAnchor.constraint(equalTo: tableFooterView.centerXAnchor, constant: 0).isActive = true
+        tableFooterTextView.centerYAnchor.constraint(equalTo: tableFooterView.centerYAnchor, constant: 0).isActive = true
+        tableFooterTextView.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        tableFooterTextView.widthAnchor.constraint(equalTo: tableFooterView.widthAnchor, constant: 0).isActive = true
     }
     
     
@@ -113,17 +140,44 @@ class SpotifyViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? SpotifyViewCell else {return}
+        guard let cellTrack = cell.recomendation else {return}
         
-        let rec = self.spotifyRecomendations[indexPath.row]
-        
-        if self.isPlayingMusic {
-            self.stop(streamer: self.musicPlayer)
-            self.isPlayingMusic = false
-            cell.statusLabel.text = ""
+        // Check if there is a cell playing music
+        if let currentTrack = self.currentPlayingMusic, let currentCell = self.currentPlayingMusicCell {
+            
+            // If the cell playing music is the cell we selected, then lets pause
+            if currentTrack == cellTrack {
+                self.stop(streamer: self.musicPlayer)
+                
+                currentTrack.isPlaying = false
+                currentCell.statusLabel.text = ""
+                
+                self.currentPlayingMusic = nil
+                self.currentPlayingMusicCell = nil
+                
+            // Otherwise, we want to stop the current music, and start playing the next one
+            } else {
+                self.stopAndThenPlay(music: cellTrack.uri, streamer: self.musicPlayer)
+                
+                currentCell.statusLabel.text = ""
+                currentTrack.isPlaying = false
+                
+                self.currentPlayingMusicCell = cell
+                self.currentPlayingMusic = cell.recomendation
+                
+                cell.statusLabel.text = Constants.Language.NowPlaying
+                cell.recomendation?.isPlaying = true
+            }
+            
+        // No one is playing
         } else {
-            self.play(music: rec.uri, streamer: self.musicPlayer)
-            self.isPlayingMusic = true
+            self.play(music: cellTrack.uri, streamer: self.musicPlayer)
+            
+            self.currentPlayingMusic = cellTrack
+            self.currentPlayingMusicCell = cell
+            
             cell.statusLabel.text = Constants.Language.NowPlaying
+            cell.recomendation?.isPlaying = true
         }
         
         

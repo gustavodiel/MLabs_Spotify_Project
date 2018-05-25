@@ -13,12 +13,7 @@ import Alamofire
     Extension for the SpotifyViewController to handle all buttons, notifications and any other method's callback.
     Also implements some delegates, used for Spotify's Audio Stream.
  */
-extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
-    
-    /// Handles the right navigation button
-    @objc func handleRightBarButtonItem() {
-        self.getTopArtist()
-    }
+extension SpotifyViewController {
     
     /// Handles the left bar button.
     /// Can be Login or Logout.
@@ -37,6 +32,13 @@ extension SpotifyViewController : SPTAudioStreamingDelegate, SPTAudioStreamingPl
             self.artists.removeAll()
             self.spotifyRecomendations.removeAll()
             self.tableView.reloadData()
+            
+            // Remove the Please login to your spotify text
+            self.tableFooterTextView.isHidden = false
+            self.tableFooterView.frame = CGRect(x: 0, y: 0, width: self.tableFooterView.frame.width, height: 256)
+            
+            // If there is a music playing, STOP IT
+            self.stop(streamer: self.musicPlayer)
         }
     }
     

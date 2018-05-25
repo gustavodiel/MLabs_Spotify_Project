@@ -66,13 +66,16 @@ class AboutViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Dequeue cell for maximum performance
+        // Don't use the cell for a certain indexPath, because we want to change the style of the cell
         var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: self.CellID)
         
+        // Changing the style (or, rather, creating the cell with a specific one)
         if cell == nil {
             cell = UITableViewCell(style: .value1, reuseIdentifier: self.CellID)
             cell.selectionStyle = .none
         }
         
+        // For each row of each section, there is a different info
         switch indexPath.section {
         case 0:
             switch indexPath.row {
