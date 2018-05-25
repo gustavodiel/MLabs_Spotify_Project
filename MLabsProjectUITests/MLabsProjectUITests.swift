@@ -33,4 +33,35 @@ class MLabsProjectUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
+    func testOpenLinks(){
+        
+        let app = XCUIApplication()
+        let tablesQuery = app.tables
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 3)
+        cell.children(matching: .textView).element(boundBy: 1).tap()
+        cell.children(matching: .textView).element(boundBy: 0).tap()
+        
+        let textView = tablesQuery.children(matching: .cell).element(boundBy: 2).children(matching: .textView).element(boundBy: 0)
+        textView.tap()
+        tablesQuery.children(matching: .cell).element(boundBy: 0).children(matching: .textView).element(boundBy: 2).tap()
+        textView.tap()
+        
+        let cell2 = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        cell2.children(matching: .textView).element(boundBy: 1).tap()
+        cell2.children(matching: .textView).element(boundBy: 3).tap()
+        
+        let textView2 = cell2.children(matching: .textView).element(boundBy: 2)
+        textView2.tap()
+        textView2.tap()
+        
+        let tabBarsQuery = app.tabBars
+        let aboutButton = tabBarsQuery.buttons["About"]
+        aboutButton.tap()
+        tabBarsQuery.buttons["Spotify"].tap()
+        aboutButton.tap()
+        
+
+        
+    }
+    
 }

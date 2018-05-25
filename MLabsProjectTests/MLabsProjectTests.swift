@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import MLabsProject
+import UIImageColors
 
 class MLabsProjectTests: XCTestCase {
     
@@ -26,10 +27,33 @@ class MLabsProjectTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
-    func testPerformanceExample() {
+    func testPerformanceGetColorHigh() {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
+            for _ in 1...100 {
+                #imageLiteral(resourceName: "spotify").getColors()
+            }
+        }
+    }
+        
+    func testPerformanceGetColorLow() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+            for _ in 1...100 {
+                #imageLiteral(resourceName: "spotify").getColors(quality: .low)
+            }
+        }
+    }
+    
+    func testPerformanceGetColorLowest() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+            for _ in 1...100 {
+                #imageLiteral(resourceName: "spotify").getColors(quality: .lowest)
+            }
         }
     }
     

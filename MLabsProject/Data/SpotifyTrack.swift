@@ -47,7 +47,7 @@ class SpotifyTrack: NSObject {
                 }
                 if let donwloaded = UIImage(data: data!){
                     self.image = donwloaded
-                    self.imageColor = self.image.getColors()
+                    self.imageColor = self.image.getColors(quality: .low)
                     taskGroup.leave()
                     DispatchQueue.main.async {
                         Constants.ImageCache.setObject(donwloaded, forKey: self.imageURL as AnyObject)
