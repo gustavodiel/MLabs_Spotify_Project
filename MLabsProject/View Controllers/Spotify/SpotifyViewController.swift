@@ -150,7 +150,7 @@ class SpotifyViewController: UITableViewController {
                 self.stop(streamer: self.musicPlayer)
                 
                 currentTrack.isPlaying = false
-                currentCell.statusLabel.text = ""
+                cell.statusImageView.isHidden = true
                 
                 self.currentPlayingMusic = nil
                 self.currentPlayingMusicCell = nil
@@ -159,13 +159,13 @@ class SpotifyViewController: UITableViewController {
             } else {
                 self.stopAndThenPlay(music: cellTrack.uri, streamer: self.musicPlayer)
                 
-                currentCell.statusLabel.text = ""
+                currentCell.statusImageView.isHidden = true
                 currentTrack.isPlaying = false
                 
                 self.currentPlayingMusicCell = cell
                 self.currentPlayingMusic = cell.recomendation
                 
-                cell.statusLabel.text = Constants.Language.NowPlaying
+                cell.statusImageView.isHidden = false
                 cell.recomendation?.isPlaying = true
             }
             
@@ -176,7 +176,7 @@ class SpotifyViewController: UITableViewController {
             self.currentPlayingMusic = cellTrack
             self.currentPlayingMusicCell = cell
             
-            cell.statusLabel.text = Constants.Language.NowPlaying
+            cell.statusImageView.isHidden = false
             cell.recomendation?.isPlaying = true
         }
         
@@ -184,7 +184,7 @@ class SpotifyViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 144
+        return 128
     }
     
 }

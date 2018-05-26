@@ -36,8 +36,9 @@ class SpotifyTrack: NSObject {
         self.imageColor = nil
     }
     
+    /// Downloads a Image async and notify a task group that it is done.
+    /// - parameter taskGroup: that task group that is handling the threads
     func downloadImage(withTaskGroup taskGroup: DispatchGroup) {
-        
         taskGroup.enter()
         if self.imageURL != "" {
             let url = URL(string: self.imageURL)
@@ -55,6 +56,16 @@ class SpotifyTrack: NSObject {
                 }
             }.resume()
         }
+    }
+    
+    /// Opens the track on Spotify (Safari if Spotify is not installed)
+    func openOnSpotify() {
+        var url = URL(string:"https://open.spotify.com/track/\(self.id)")!
+        if isSpotifyInstalled() {
+            url = URL(string:"spotify:track:\(self.id)")!
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        
     }
     
 }

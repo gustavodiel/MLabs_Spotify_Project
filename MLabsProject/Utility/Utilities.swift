@@ -34,3 +34,10 @@ func sendEmail(to: String, viewController: UIViewController, delegate: MFMailCom
         viewController.present(mail, animated: true)
     }
 }
+
+/// Checks if Spotify is installed by checking if there is an app that can handle `spotify:` URLs
+/// - returns: Whether Spotify is installed or not
+func isSpotifyInstalled() -> Bool {
+    return UIApplication.shared.canOpenURL(NSURL(string:"spotify:")! as URL)
+}
+

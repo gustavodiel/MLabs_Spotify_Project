@@ -39,6 +39,9 @@ struct Constants {
     /// About icon for Tab Bar
     static let AboutIconImage = UIImage(named: "about")
     
+    /// About icon for Tab Bar
+    static let PlayingIconImage = UIImage(named: "play")
+    
     /// Protocol that holds the localization for our app
     static let Language: Language = English()
     
@@ -64,8 +67,6 @@ protocol Language {
     var NeedToLoginToSpotifyTitle: String {get}
     var NeedToLoginToSpotifyMessage: String {get}
     
-    var NowPlaying: String {get}
-    
     var AboutName: String {get}
     var AboutOpenGithub: String {get}
     var AboutDeveloper: String {get}
@@ -88,8 +89,6 @@ struct English : Language {
     var NeedToLoginToSpotifyTitle: String = "Login required"
     var NeedToLoginToSpotifyMessage: String = "Please login to your Spotify account using the button at the side"
     
-    var NowPlaying: String = "Now Playing"
-    
     var AboutName: String = "Name"
     var AboutOpenGithub: String = "Open on Github.com"
     var AboutDeveloper: String = "Developer:"
@@ -111,8 +110,6 @@ struct Portugues : Language {
     
     var NeedToLoginToSpotifyTitle: String = "Login Necessário"
     var NeedToLoginToSpotifyMessage: String = "Por favor faça login à sua conta do Spotify utilizando o botão ao lado"
-    
-    var NowPlaying: String = "Tocando"
     
     var AboutName: String = "Nome"
     var AboutOpenGithub: String = "Abrir no Github.com"
