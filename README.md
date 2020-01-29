@@ -1,4 +1,9 @@
 # Usage
+## Roadmap
+- Clean code
+- Add tests
+- Enhance design
+
 ---------------------------
 ## Things thou wilt need:
 * Any macOS device (macOS 10.13 and up)
